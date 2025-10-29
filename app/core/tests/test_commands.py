@@ -25,7 +25,6 @@ class CommandTests(SimpleTestCase):
     @patch('time.sleep')
     def test_wait_for_db_delay(self, patched_sleep, patched_check):
         """Test waiting for db when db is not available"""
-        # TODO: DB is not starting when I run this directly from the CLI
         patched_check.side_effect = [Psycopg2OpError] * 2 + \
             [OperationalError] * 3 + [True]
 
