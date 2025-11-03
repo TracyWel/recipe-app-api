@@ -66,7 +66,6 @@ class PublicUserApiTests(TestCase):
         ).exists()
         self.assertFalse(user_exists)
 
-
     def test_create_token_for_user(self):
         """Test generates token for valid credentials"""
         user_details = {
@@ -85,7 +84,6 @@ class PublicUserApiTests(TestCase):
         self.assertIn('token', res.data)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-
     def test_create_token_invalid_credentials(self):
         """Test returns error if credentials are invalid"""
         create_user(email='test@example.com', password='goodpass')
@@ -95,7 +93,6 @@ class PublicUserApiTests(TestCase):
 
         self.assertNotIn('token', res.data)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-
 
     def test_create_token_blank_password(self):
         """Test posting a blank password returns an error"""
@@ -110,6 +107,7 @@ class PublicUserApiTests(TestCase):
         res = self.client.get(ME_URL)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
 
 class PrivateUserApiTests(TestCase):
     """Test API that require authentication"""
