@@ -30,6 +30,7 @@ class PublicTagsApiTests(TestCase):
     def test_auth_required(self):
         """Test that authentication is required"""
         res = self.client.get(TAGS_URL)
+
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
@@ -37,7 +38,7 @@ class PrivateTagsApiTests(TestCase):
     """Test authenticated API requests"""
 
     def setUp(self):
-        self.client = create_user()
+        self.user = create_user()
         self.client = APIClient()
         self.client.force_authenticate(self.user)
 
@@ -58,7 +59,7 @@ class PrivateTagsApiTests(TestCase):
         """Test that tags returned are for the authenticated user"""
         user2 = get_user_model().objects.create_user(email='user2@example.com')
         Tag.objects.create(user=user2, name='Fruity')
-        tag = Tag.objects.creat(user=self.user, name='Comfort Food')
+        tag = Tag.objects.create(user=self.user, name='Comfort Food')
 
         res = self.client.get(TAGS_URL)
 
