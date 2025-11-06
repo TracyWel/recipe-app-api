@@ -45,7 +45,7 @@ def create_user(**params):
     return get_user_model().objects.create_user(**params)
 
 
-class PublicRecipeApiTests(TestCase):
+class PublicRecipeAPITests(TestCase):
     """Test unauthenticated API access"""
 
     def setUp(self):
@@ -63,7 +63,7 @@ class PrivateRecipeApiTests(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.user = create_user(email='user@example', password='testpass123')
+        self.user = create_user(email='user@example.com', password='testpass123')
         self.client.force_authenticate(self.user)
 
     def test_retrieve_recipes(self):
@@ -80,7 +80,7 @@ class PrivateRecipeApiTests(TestCase):
 
     def test_recipes_limited_to_user(self):
         """Test list of recipes is limited to authenticated user"""
-        other_user = create_user(email='user1@example', password='password123')
+        other_user = create_user(email='other@example.com', password='password123')
         create_recipe(user=other_user)
         create_recipe(user=self.user)
 
@@ -91,8 +91,8 @@ class PrivateRecipeApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
-    def test_view_recipe_detail(self):
-        """Test viewing a recipe detail"""
+    def test_get_recipe_detail(self):
+        """Test get a recipe detail"""
         recipe = create_recipe(user=self.user)
 
         url = detail_url(recipe.id)
@@ -116,15 +116,15 @@ class PrivateRecipeApiTests(TestCase):
             self.assertEqual(getattr(recipe, k), v)
         self.assertEqual(recipe.user, self.user)
 
-    def test_partial_update_recipe(self):
+    def test_partial_update(self):
         """Test updating a recipe with patch"""
-        original_link = 'http://example.com/recipe.pdf'
+        original_link = 'https://example.com/recipe.pdf'
         recipe = create_recipe(
             user=self.user,
-            title = 'Sample recipe title',
+            title='Sample recipe title',
             link=original_link,
         )
-        payload = {'title': 'New recipe title'}
+        payload = {'title':'New recipe title'}
         url = detail_url(recipe.id)
         res = self.client.patch(url, payload)
 
@@ -134,17 +134,17 @@ class PrivateRecipeApiTests(TestCase):
         self.assertEqual(recipe.link, original_link)
         self.assertEqual(recipe.user, self.user)
 
-    def test_full_update_recipe(self):
+    def test_full_update(self):
         """Test updating a recipe with put"""
         recipe = create_recipe(
             user=self.user,
-            title = 'Sample recipe title',
-            link = 'http://example.com/recipe.pdf',
-            description = 'Sample recipe description',
+            title='Sample recipe title',
+            link='https://example.com/recipe.pdf',
+            description='Sample recipe description',
         )
         payload = {
             'title': 'New recipe title',
-            'link': 'http://example.com/recipe.pdf',
+            'link': 'https://example.com/new-recipe.pdf',
             'description': 'New recipe description',
             'time_minutes': 10,
             'price': Decimal('2.50'),
