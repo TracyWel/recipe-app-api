@@ -6,7 +6,17 @@ from rest_framework import serializers
 from core.models import (
     Recipe,
     Tag,
+    Ingredient,
 )
+
+
+class IngredientSerializer(serializers.ModelSerializer):
+    """Serializer for Ingredients"""
+
+    class Meta:
+        model = Ingredient
+        fields = ['id', 'name']
+        read_only_fields = ['id']
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -48,7 +58,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags', None)
         if tags is not None:
             instance.tags.clear()
-            self._get_or_create_tags(instance, tags)
+            self._get_or_create_tags(tags, instance)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
