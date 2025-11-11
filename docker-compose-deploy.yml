@@ -6,7 +6,7 @@ services:
       context: .
     restart: always
     volumes:
-      - logs-data:/vol
+      - static-data:/vol/web
     environment:
       - DB_HOST=db
       - DB_NAME=${DB_NAME}
@@ -35,7 +35,9 @@ services:
       - app
     ports:
       - 8000:8000
+    volumes:
+      - static-data:/vol/static
 
 volumes:
   postgres-data:
-  logs-data:
+  static-data:
